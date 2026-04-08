@@ -1049,7 +1049,7 @@ input, textarea {
 
     <label class="sync-field-label" for="jb-key">JSONBin API Key (Master Key)</label>
     <input class="sync-input" type="password" id="jb-key"
-      placeholder="$2b$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      placeholder="$2a$10$ or $2b$10$…"
       autocomplete="off" autocorrect="off" spellcheck="false">
 
     <label class="sync-field-label" for="jb-bin">Bin ID</label>
@@ -1231,7 +1231,7 @@ input, textarea {
       <div class="info-card-title">✦ &nbsp; Setting Up Auto-Sync (JSONBin)</div>
       <div class="info-body">
         <strong>Step 1</strong> — Go to <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> and create a free account.<br>
-        <strong>Step 2</strong> — Click your avatar (top right) → <em>API Keys</em> → copy your <em>Master Key</em> (starts with <code>$2b$</code>).<br>
+        <strong>Step 2</strong> — Click your avatar (top right) → <em>API Keys</em> → copy your <em>Master Key</em> (starts with <code>$2a$</code> or <code>$2b$</code>).<br>
         <strong>Step 3</strong> — In this tracker, click <strong>☁ Sync</strong> in the header. Paste your Master Key. Click <strong>✦ Create Bin for Me</strong>.<br>
         <strong>Step 4</strong> — The tracker creates a private bin and shows its ID. Copy that Bin ID.<br>
         <strong>Step 5</strong> — Done. Progress now syncs automatically on every change.<br><br>
@@ -2001,8 +2001,8 @@ function toggleSync() {
 async function jbCreateBin() {
   const key = (document.getElementById('jb-key')?.value || '').trim();
   if (!key) { jbSetStatus('Please enter your JSONBin Master Key first.', 'err'); return; }
-  if (!key.startsWith('$2b$')) {
-    jbSetStatus('That does not look like a valid Master Key (should start with $2b$).', 'err');
+  if (!key.startsWith('$2a$') && !key.startsWith('$2b$')) {
+    jbSetStatus('That does not look like a valid Master Key (should start with $2a$ or $2b$).', 'err');
     return;
   }
   jbSetStatus('Creating private bin…', 'inf');
