@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CR Tracker">
+  <meta name="theme-color" content="#080603">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Critical Role — C3 Era Tracker</title>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+:root {
+  --bg: #08060300;
+  --bg-real: #080603;
+  --s1: #140e08;
+  --s2: #1c1208;
+  --s3: #241808;
+  --s4: #2e2010;
+  --bd: #4a3618;
+  --bd2: #6a5028;
+  --bd3: #8a7040;
+  --tx: #ede0c8;
+  --mu: #a08c6c;
+  --fa: #6a5838;
+  --go: #c8a844;
+  --go2: #e8c860;
+  --go3: #a07828;
+  --go4: #604810;
+  --c3: #8b1a1a; --c3b: #6a1010;
+  --eu: #1a5c26; --eub: #124018;
+  --sp: #806010; --spb: #604808;
+  --as: #1a2e78; --asb: #102058;
+  --ca: #4e1278; --cab: #360c58;
+  --bc: #0c4848; --bcb: #083030;
+  --po: #343408; --pob: #202000;
+  --li: #7a3808; --lib: #582800;
+  --dh: #102850; --dhb: #081838;
+  --radius: 4px;
+  --font-title: 'Cinzel Decorative', 'Palatino Linotype', serif;
+  --font-head: 'Cinzel', 'Palatino Linotype', serif;
+  --font-body: 'Crimson Text', Georgia, serif;
+  --font-mono: 'Courier New', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  background-color: var(--bg-real);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(200,168,68,0.07) 0%, transparent 60%),
+    repeating-linear-gradient(-45deg, transparent 0px, transparent 38px, rgba(200,168,68,0.012) 38px, rgba(200,168,68,0.012) 39px);
+  color: var(--tx);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: rgba(200,168,68,0.25); color: var(--go2); }
+
+::-webkit-scrollbar { width: 6px; background: var(--s1); }
+::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bd3); }
+
+a { color: var(--go); text-decoration: none; }
+a:hover { color: var(--go2); text-decoration: underline; }
+
+button {
+  cursor: pointer;
+  font-family: var(--font-head);
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+input, textarea {
+  font-family: var(--font-body);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+/* ── LAYOUT ───────────────────────────────────────────────── */
+#app { max-width: 960px; margin: 0 auto; padding: 24px 20px 60px; }
+
+/* ── ORNAMENTAL RULE ──────────────────────────────────────── */
+.orn-rule {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 12px 0;
+  color: var(--go4);
+  font-size: 12px;
+}
+.orn-rule::before, .orn-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--bd2), transparent);
+}
+
+/* ── HEADER ───────────────────────────────────────────────── */
+.site-header {
+  text-align: center;
+  padding: 28px 20px 20px;
+  position: relative;
+}
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(200,168,68,0.06) 0%, transparent 100%);
+  border-bottom: 1px solid var(--bd);
+  pointer-events: none;
+}
+.site-title {
+  font-family: var(--font-title);
+  font-size: clamp(18px, 4vw, 30px);
+  font-weight: 700;
+  color: var(--go2);
+  letter-spacing: 0.08em;
+  text-shadow:
+    0 0 60px rgba(200,168,68,0.5),
+    0 0 20px rgba(200,168,68,0.3),
+    0 2px 6px rgba(0,0,0,0.9);
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+.site-subtitle {
+  font-family: var(--font-head);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mu);
+  margin-bottom: 16px;
+  text-align: center;
+  width: 100%;
+  display: block;
+}
+/* Decorative border around header */
+.header-frame {
+  border: 1px solid var(--bd);
+  border-radius: 6px;
+  padding: 24px 24px 16px;
+  background: linear-gradient(180deg, rgba(200,168,68,0.04) 0%, transparent 60%);
+  position: relative;
+  margin-bottom: 16px;
+}
+.header-frame::before, .header-frame::after {
+  content: '✦';
+  position: absolute;
+  color: var(--go3);
+  font-size: 14px;
+  top: 8px;
+}
+.header-frame::before { left: 12px; }
+.header-frame::after  { right: 12px; }
+
+/* ── OVERALL PROGRESS ─────────────────────────────────────── */
+.overall-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+.progress-track {
+  flex: 1;
+  height: 7px;
+  background: var(--bd);
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--go4) 0%, var(--go) 60%, var(--go2) 100%);
+  box-shadow: 0 0 10px rgba(200,168,68,0.5);
+  transition: width 0.4s ease;
+}
+.progress-label {
+  font-family: var(--font-head);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--go);
+  white-space: nowrap;
+}
+.save-dot {
+  font-family: var(--font-head);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.save-dot.saving { background: var(--s3); color: var(--mu); border-color: var(--bd); }
+.save-dot.saved  { background: rgba(26,90,38,0.4); color: #70c870; border-color: #2a6030; }
+.save-dot.error  { background: rgba(90,20,20,0.4); color: #d08080; border-color: #6a2020; }
+
+/* ── HEADER CONTROLS ──────────────────────────────────────── */
+.header-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.ctrl-btn {
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 5px 14px;
+  border-radius: 3px;
+  background: var(--s3);
+  border: 1px solid var(--bd);
+  color: var(--mu);
+  transition: all 0.15s;
+}
+.ctrl-btn:hover { background: var(--s4); color: var(--go); border-color: var(--bd2); }
+.ctrl-btn.active { background: var(--go4); color: var(--go2); border-color: var(--go3); }
+
+/* ── NEXT UP ──────────────────────────────────────────────── */
+.next-up-label {
+  font-family: var(--font-head);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mu);
+  margin-bottom: 8px;
+}
+.next-up-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+@media (max-width: 600px) { .next-up-grid { grid-template-columns: 1fr; } }
+.next-card {
+  padding: 12px 14px;
+  border-radius: 4px;
+  background: var(--s2);
+  border: 1px solid var(--bd);
+  border-top: 2px solid var(--accent-col);
+  position: relative;
+  overflow: hidden;
+}
+.next-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(200,168,68,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+.next-card-label {
+  font-family: var(--font-head);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-col);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.next-card-title {
+  font-size: 13px;
+  color: var(--tx);
+  line-height: 1.35;
+  margin-bottom: 8px;
+}
+.next-card-code {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--mu);
+  margin-right: 5px;
+}
+.next-card-actions { display: flex; gap: 6px; }
+.btn-watch {
+  font-family: var(--font-head);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-watch:hover { opacity: 0.85; }
+.btn-done {
+  font-family: var(--font-head);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  padding: 4px 10px;
+  border-radius: 3px;
+  background: transparent;
+  border: 1px solid var(--bd2);
+  color: var(--mu);
+  transition: all 0.15s;
+}
+.btn-done:hover { border-color: var(--go3); color: var(--go); }
+.next-card-caught {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--fa);
+  padding: 14px;
+  border-radius: 4px;
+  background: var(--s1);
+  border: 1px solid var(--bd);
+  text-align: center;
+}
+
+/* ── TABS ─────────────────────────────────────────────────── */
+.tab-bar {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--bd);
+  margin-bottom: 14px;
+}
+.tab-btn {
+  font-family: var(--font-head);
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  color: var(--mu);
+  margin-bottom: -1px;
+  transition: all 0.15s;
+}
+.tab-btn:hover { color: var(--tx); background: rgba(200,168,68,0.04); }
+.tab-btn.active {
+  color: var(--go2);
+  background: var(--s2);
+  border-color: var(--bd);
+  border-bottom-color: var(--s2);
+}
+
+/* ── FILTERS ──────────────────────────────────────────────── */
+.search-row {
+  position: relative;
+  margin-bottom: 10px;
+}
+.search-input {
+  width: 100%;
+  background: var(--s2);
+  border: 1px solid var(--bd2);
+  border-radius: 4px;
+  padding: 9px 36px 9px 14px;
+  font-size: 14px;
+  color: var(--tx);
+  font-family: var(--font-body);
+  transition: border-color 0.15s;
+}
+.search-input:focus { border-color: var(--go3); }
+.search-input::placeholder { color: var(--fa); }
+.search-clear {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  color: var(--mu);
+  font-size: 18px;
+  line-height: 1;
+  padding: 0 4px;
+  cursor: pointer;
+}
+.filter-row {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-sep { width: 1px; height: 16px; background: var(--bd); margin: 0 2px; }
+.filter-btn {
+  font-family: var(--font-head);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  padding: 4px 11px;
+  border-radius: 3px;
+  background: var(--s2);
+  border: 1px solid var(--bd);
+  color: var(--mu);
+  transition: all 0.15s;
+}
+.filter-btn:hover { border-color: var(--bd2); color: var(--tx); }
+.filter-btn.active {
+  background: var(--go4);
+  border-color: var(--go3);
+  color: var(--go2);
+}
+.filter-btn.fmt-active {
+  background: rgba(20,50,20,0.6);
+  border-color: #3a6030;
+  color: #80c878;
+}
+
+/* ── SECTIONS ─────────────────────────────────────────────── */
+.section { margin-bottom: 6px; }
+.sec-header {
+  display: flex;
+  align-items: center;
+  background: var(--s2);
+  border: 1px solid var(--bd);
+  border-left: 3px solid var(--sec-col);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: background 0.15s;
+}
+.sec-header:hover { background: var(--s3); }
+.sec-toggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: transparent;
+  color: var(--tx);
+  text-align: left;
+  min-width: 0;
+  cursor: pointer;
+  font-family: var(--font-head);
+}
+.sec-label {
+  flex: 1;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  text-align: left;
+}
+.sec-count {
+  font-size: 10px;
+  color: var(--mu);
+  white-space: nowrap;
+  font-family: var(--font-head);
+  letter-spacing: 0.04em;
+}
+.sec-bar-track {
+  width: 36px;
+  height: 3px;
+  background: var(--bd);
+  border-radius: 2px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.sec-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--go4), var(--go));
+  transition: width 0.3s;
+}
+.sec-arrow { font-size: 9px; color: var(--mu); flex-shrink: 0; }
+.sec-info-btn {
+  padding: 10px 12px;
+  background: transparent;
+  border-left: 1px solid var(--bd);
+  color: var(--fa);
+  font-size: 13px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-head);
+}
+.sec-info-btn:hover, .sec-info-btn.active { color: var(--go); background: rgba(200,168,68,0.06); }
+.sec-summary {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--mu);
+  background: var(--s3);
+  border: 1px solid var(--bd);
+  border-top: 0;
+  font-style: italic;
+  line-height: 1.55;
+  display: none;
+}
+.sec-summary.open { display: block; }
+.sec-summary strong {
+  color: var(--go);
+  font-style: normal;
+  font-family: var(--font-head);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+.sec-desc {
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--fa);
+  background: var(--s1);
+  border-left: 1px solid var(--bd);
+  border-right: 1px solid var(--bd);
+  font-style: italic;
+}
+.sec-body {
+  border: 1px solid var(--bd);
+  border-top: 0;
+  border-radius: 0 0 4px 4px;
+  overflow: hidden;
+  display: none;
+}
+.sec-body.open { display: block; }
+.ep-list { display: flex; flex-direction: column; gap: 1px; padding: 2px 0; background: var(--bd); }
+
+/* ── EPISODE ROW ──────────────────────────────────────────── */
+.ep-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 7px 10px;
+  background: var(--s2);
+  border-left: 2px solid var(--ep-col);
+  transition: background 0.1s, opacity 0.2s;
+  font-size: 13px;
+}
+.ep-row:hover { background: var(--s3); }
+.ep-row[data-state="watched"] { opacity: 0.45; background: rgba(0,0,0,0.25); }
+.ep-row[data-state="skipped"] { opacity: 0.35; }
+
+.watch-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid;
+  font-size: 13px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-body);
+}
+.watch-btn:hover { transform: scale(1.1); filter: brightness(1.2); }
+
+.ep-body { flex: 1; min-width: 0; }
+.ep-top { display: flex; gap: 6px; flex-wrap: wrap; align-items: flex-start; }
+.ep-code {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--mu);
+  white-space: nowrap;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.ep-title { color: var(--tx); flex: 1; line-height: 1.4; }
+.ep-row[data-state="watched"] .ep-title,
+.ep-row[data-state="skipped"] .ep-title { color: var(--fa); }
+.ep-noncanon { font-size: 10px; color: #787878; font-style: italic; }
+.ep-notes {
+  font-size: 11.5px;
+  color: var(--mu);
+  margin-top: 3px;
+  font-style: italic;
+  line-height: 1.35;
+}
+.ep-notes.confirmed { color: #60a860; }
+.ep-tags { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+
+.badge {
+  font-family: var(--font-head);
+  font-size: 9px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+
+.ep-link {
+  flex-shrink: 0;
+  font-family: var(--font-head);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 4px 9px;
+  background: var(--s3);
+  border: 1px solid var(--bd2);
+  border-radius: 3px;
+  color: var(--go);
+  display: inline-block;
+  margin-top: 1px;
+  transition: all 0.15s;
+}
+.ep-link:hover { background: var(--s4); color: var(--go2); border-color: var(--go3); text-decoration: none; }
+
+/* ── PACE PLANNER ─────────────────────────────────────────── */
+.planner-card {
+  padding: 18px 20px;
+  background: var(--s2);
+  border: 1px solid var(--bd);
+  border-top: 2px solid var(--go3);
+  border-radius: 4px;
+}
+.planner-title {
+  font-family: var(--font-head);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--go);
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+.planner-epw {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.epw-label { font-size: 12px; color: var(--mu); }
+.epw-controls { display: flex; align-items: center; gap: 10px; }
+.epw-btn {
+  width: 36px; height: 36px;
+  border-radius: 4px;
+  background: var(--s3);
+  border: 1px solid var(--bd2);
+  color: var(--tx);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.epw-btn:hover { background: var(--s4); border-color: var(--go3); color: var(--go); }
+.epw-val {
+  font-family: var(--font-title);
+  font-size: 22px;
+  color: var(--go);
+  min-width: 32px;
+  text-align: center;
+}
+.epw-range { flex: 1; min-width: 120px; accent-color: var(--go3); }
+.planner-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+@media (max-width: 500px) { .planner-stats { grid-template-columns: 1fr 1fr; } }
+.stat-card {
+  padding: 9px 12px;
+  background: var(--s3);
+  border-radius: 3px;
+  border: 1px solid var(--bd);
+}
+.stat-label { font-family: var(--font-head); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fa); margin-bottom: 3px; }
+.stat-val { font-family: var(--font-head); font-size: 14px; font-weight: 600; }
+.planner-note {
+  padding: 9px 12px;
+  background: var(--s3);
+  border-radius: 3px;
+  font-size: 13px;
+  color: var(--mu);
+  margin-bottom: 8px;
+}
+.planner-fine {
+  font-size: 12px;
+  color: var(--fa);
+  font-style: italic;
+}
+
+/* ── GUESTS ───────────────────────────────────────────────── */
+.guests-intro {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--mu);
+  font-style: italic;
+  background: var(--s2);
+  border: 1px solid var(--bd);
+  border-top: 2px solid var(--go3);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.guest-cat { margin-bottom: 8px; border: 1px solid var(--bd); border-radius: 4px; overflow: hidden; }
+.guest-cat-hdr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--s2);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.guest-cat-hdr:hover { background: var(--s3); }
+.guest-cat-label { flex: 1; font-family: var(--font-head); font-size: 11.5px; letter-spacing: 0.04em; color: var(--tx); }
+.guest-cat-count { font-family: var(--font-head); font-size: 10px; color: var(--mu); }
+.guest-cat-body { display: none; background: var(--s1); }
+.guest-cat-body.open { display: block; }
+.guest-entry {
+  padding: 11px 14px;
+  border-left: 2px solid var(--cat-col);
+  border-bottom: 1px solid var(--bd);
+  transition: background 0.1s;
+}
+.guest-entry:last-child { border-bottom: none; }
+.guest-entry:hover { background: var(--s2); }
+.guest-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 3px; }
+.guest-name { font-size: 14px; font-weight: 600; color: var(--tx); }
+.guest-player { font-size: 11px; color: var(--mu); font-style: italic; }
+.guest-eps { font-family: var(--font-head); font-size: 10.5px; color: var(--go); letter-spacing: 0.03em; margin-bottom: 4px; }
+.guest-desc { font-size: 12.5px; color: var(--mu); line-height: 1.45; }
+
+/* ── INFO ─────────────────────────────────────────────────── */
+.info-card {
+  padding: 16px 18px;
+  background: var(--s2);
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.info-card-title {
+  font-family: var(--font-head);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--go);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--bd);
+}
+.info-body { font-size: 14px; color: var(--tx); line-height: 1.85; }
+.info-body strong { color: var(--go); font-family: var(--font-head); font-size: 12px; letter-spacing: 0.04em; }
+.resource-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+@media (max-width: 500px) { .resource-grid { grid-template-columns: 1fr; } }
+.resource-item { padding: 9px 12px; background: var(--s3); border-radius: 3px; border: 1px solid var(--bd); }
+.resource-link { font-family: var(--font-head); font-size: 12px; letter-spacing: 0.04em; color: var(--go); display: block; margin-bottom: 2px; }
+.resource-link:hover { color: var(--go2); }
+.resource-desc { font-size: 12px; color: var(--mu); line-height: 1.4; }
+
+/* ── BACKUP PANEL ─────────────────────────────────────────── */
+.backup-panel {
+  margin-bottom: 12px;
+  padding: 16px 18px;
+  background: var(--s2);
+  border: 1px solid var(--bd2);
+  border-radius: 4px;
+  display: none;
+}
+.backup-panel.open { display: block; }
+.backup-title {
+  font-family: var(--font-head);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--go);
+  margin-bottom: 8px;
+}
+.backup-note { font-size: 13px; color: var(--mu); margin-bottom: 10px; line-height: 1.5; }
+.backup-label { font-size: 12px; color: var(--mu); margin-bottom: 4px; font-family: var(--font-head); letter-spacing: 0.04em; }
+.backup-textarea {
+  width: 100%;
+  height: 58px;
+  background: var(--s3);
+  border: 1px solid var(--bd2);
+  color: var(--tx);
+  border-radius: 3px;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-family: monospace;
+  resize: none;
+  margin-bottom: 10px;
+}
+.backup-actions { display: flex; gap: 8px; }
+.backup-restore-btn {
+  font-family: var(--font-head);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 7px 16px;
+  background: rgba(20,80,28,0.5);
+  border: 1px solid #2a6030;
+  border-radius: 3px;
+  color: #70c870;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.backup-restore-btn:hover { background: rgba(20,80,28,0.8); }
+.backup-close-btn {
+  font-family: var(--font-head);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 7px 14px;
+  background: var(--s3);
+  border: 1px solid var(--bd);
+  border-radius: 3px;
+  color: var(--mu);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.backup-close-btn:hover { color: var(--tx); border-color: var(--bd2); }
+
+/* ── WATCH STATE LEGEND (mobile) ──────────────────────────── */
+.ws-legend {
+  display: none;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 8px 12px;
+  background: var(--s1);
+  border: 1px solid var(--bd);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+@media (max-width: 600px) { .ws-legend { display: flex; } }
+.ws-leg-item { display: flex; align-items: center; gap: 5px; }
+.ws-leg-icon {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: bold;
+  border: 2px solid;
+  flex-shrink: 0;
+}
+.ws-leg-label { color: var(--mu); }
+.ws-leg-hint { color: var(--fa); font-style: italic; font-size: 11px; margin-left: auto; }
+
+/* ── SEARCH RESULTS ───────────────────────────────────────── */
+.search-results-label {
+  font-size: 12px;
+  color: var(--mu);
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+/* ── FOOTER ───────────────────────────────────────────────── */
+.site-footer {
+  margin-top: 24px;
+  padding-top: 12px;
+  border-top: 1px solid var(--bd);
+  text-align: center;
+  font-size: 11px;
+  color: var(--fa);
+  font-style: italic;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  #app { padding: 14px 12px 24px; }
+  .site-title { font-size: 18px; }
+  .tab-btn { padding: 7px 12px; font-size: 10px; }
+  .ep-row { padding: 6px 8px; }
+}
+
+
+.cr-logo {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  object-position: 50% 48%;
+  border-radius: 50%;
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 8px rgba(200,168,68,0.3));
+  border: 1.5px solid rgba(200,168,68,0.25);
+}
+.header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+.header-title-row .site-title {
+  margin-bottom: 0;
+}
+
+/* ── GIST SYNC ────────────────────────────────────────────── */
+.sync-panel {
+  display: none;
+  margin-bottom: 12px;
+  padding: 18px 20px;
+  background: var(--s2);
+  border: 1px solid var(--bd2);
+  border-top: 2px solid var(--go3);
+  border-radius: 4px;
+}
+.sync-panel.open { display: block; }
+.sync-title {
+  font-family: var(--font-head);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--go);
+  margin-bottom: 8px;
+}
+.sync-note {
+  font-size: 13px;
+  color: var(--mu);
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+.sync-note strong { color: var(--go); font-family: var(--font-head); font-size: 11px; }
+.sync-field-label {
+  font-family: var(--font-head);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--go3);
+  margin-bottom: 5px;
+  margin-top: 10px;
+  display: block;
+}
+.sync-field-label:first-child { margin-top: 0; }
+.sync-input {
+  width: 100%;
+  background: var(--s3);
+  border: 1px solid var(--bd2);
+  color: var(--tx);
+  border-radius: 3px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-family: monospace;
+}
+.sync-input:focus { border-color: var(--go3); outline: none; }
+.sync-input::placeholder { color: var(--fa); }
+.sync-row { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; flex-wrap: wrap; }
+.sync-btn {
+  font-family: var(--font-head);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  padding: 8px 16px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.sync-btn-primary { background: rgba(100,70,10,0.5); border: 1px solid var(--go3); color: var(--go2); }
+.sync-btn-primary:hover { background: rgba(120,90,15,0.7); }
+.sync-btn-secondary { background: var(--s3); border: 1px solid var(--bd2); color: var(--mu); }
+.sync-btn-secondary:hover { color: var(--tx); border-color: var(--bd3); }
+.sync-status-line {
+  font-size: 12px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border-radius: 3px;
+  border: 1px solid transparent;
+  min-height: 36px;
+  line-height: 1.4;
+  display: none;
+}
+.sync-status-line.show { display: block; }
+.sync-status-line.ok  { background: rgba(20,70,25,0.35); border-color: #2a6030; color: #80d080; }
+.sync-status-line.err { background: rgba(90,20,20,0.35); border-color: #6a2020; color: #d08080; }
+.sync-status-line.inf { background: rgba(100,70,10,0.25); border-color: var(--bd2); color: var(--go); }
+.sync-indicator {
+  font-family: var(--font-head);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+  white-space: nowrap;
+  cursor: default;
+}
+.sync-indicator.idle    { display: none; }
+.sync-indicator.syncing { background: var(--s3); color: var(--mu); border-color: var(--bd); display: inline-block; }
+.sync-indicator.synced  { background: rgba(20,70,25,0.4); color: #70c870; border-color: #2a6030; display: inline-block; }
+.sync-indicator.error   { background: rgba(90,20,20,0.4); color: #d08080; border-color: #6a2020; display: inline-block; cursor: pointer; }
+.sync-indicator.offline { background: rgba(80,60,10,0.4); color: var(--go); border-color: var(--go4); display: inline-block; }
+
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── HEADER ─────────────────────────────────────── -->
+  <div class="header-frame">
+    <div class="header-title-row">
+      <img src="data:image/jpeg;base64,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" alt="Critical Role" class="cr-logo">
+      <div class="site-title">Critical Role</div>
+    </div>
+    <div class="site-subtitle">✦ &nbsp; Campaign 3 Era Tracker &nbsp; ✦</div>
+    <div class="overall-progress">
+      <div class="progress-track"><div class="progress-fill" id="overall-bar" style="width:0%"></div></div>
+      <span class="progress-label" id="overall-label">0/0 (0%)</span>
+      <span class="save-dot" id="save-status"></span>
+      <span class="sync-indicator idle" id="sync-indicator" onclick="toggleSync()" title="Click to open sync settings"></span>
+    </div>
+    <div class="header-controls">
+      <button class="ctrl-btn" id="sync-btn" onclick="toggleSync()">☁ Sync</button>
+      <button class="ctrl-btn" id="backup-btn" onclick="toggleBackup()">📤 Backup</button>
+    </div>
+  </div>
+
+
+
+  <!-- ── GIST SYNC PANEL ─────────────────────────────────── -->
+  <div class="sync-panel" id="sync-panel">
+    <div class="sync-title">☁ &nbsp; Auto-Sync via GitHub Gist</div>
+    <div class="sync-note">
+      Your progress syncs automatically to a private GitHub Gist — open the tracker on any device and your watch history is always up to date.
+      <br><strong>Setup takes 2 minutes.</strong> See the Info tab for step-by-step instructions.
+    </div>
+
+    <label class="sync-field-label" for="sync-token">GitHub Personal Access Token</label>
+    <input class="sync-input" type="password" id="sync-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" autocorrect="off" spellcheck="false">
+
+    <label class="sync-field-label" for="sync-gist-id">Gist ID</label>
+    <input class="sync-input" type="text" id="sync-gist-id" placeholder="e.g. a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4" autocomplete="off" autocorrect="off" spellcheck="false">
+
+    <div class="sync-row">
+      <button class="sync-btn sync-btn-primary" onclick="saveGistConfig()">Save &amp; Connect</button>
+      <button class="sync-btn sync-btn-primary" onclick="createAndConnectGist()">✦ Create New Gist for Me</button>
+      <button class="sync-btn sync-btn-secondary" onclick="forcePullGist()">↓ Pull from Gist</button>
+      <button class="sync-btn sync-btn-secondary" onclick="forcePushGist()">↑ Push to Gist</button>
+    </div>
+
+    <div class="sync-status-line" id="sync-status-line"></div>
+
+    <div style="margin-top:14px;border-top:1px solid var(--bd);padding-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="sync-btn sync-btn-secondary" onclick="toggleSync()">Close</button>
+      <button class="sync-btn sync-btn-secondary" onclick="clearGistConfig()">Disconnect</button>
+      <span style="font-size:11px;color:var(--fa);font-style:italic">Token stored locally in this browser only. Never shared.</span>
+    </div>
+  </div>
+
+  <!-- ── BACKUP PANEL ────────────────────────────────── -->
+  <div class="backup-panel" id="backup-panel">
+    <div class="backup-title">✦ Backup &amp; Restore Progress</div>
+    <div class="backup-note">Copy the text below and save it somewhere safe (Notes, email). Paste it back here to restore progress on any device.</div>
+    <div class="backup-label">Your current progress — click to select, then copy:</div>
+    <textarea class="backup-textarea" id="backup-export" readonly onclick="this.select()"></textarea>
+    <div class="backup-label">Paste a backup here to restore:</div>
+    <textarea class="backup-textarea" id="backup-import" placeholder="Paste your backup text here…"></textarea>
+    <div class="backup-actions">
+      <button class="backup-restore-btn" onclick="doImport()">✦ Restore from Backup</button>
+      <button class="backup-close-btn" onclick="toggleBackup()">Close</button>
+    </div>
+  </div>
+
+  <!-- ── NEXT UP ─────────────────────────────────────── -->
+  <div class="next-up-label">▶ &nbsp; N E X T &nbsp; U P</div>
+  <div class="next-up-grid">
+    <div id="next-c3"></div>
+    <div id="next-comp"></div>
+    <div id="next-live"></div>
+  </div>
+
+  <div class="orn-rule">✦</div>
+
+  <!-- ── TABS ────────────────────────────────────────── -->
+  <div class="tab-bar">
+    <button class="tab-btn" data-tab="list" onclick="switchTab('list')">📋 Watch List</button>
+    <button class="tab-btn" data-tab="planner" onclick="switchTab('planner')">📅 Pace Planner</button>
+    <button class="tab-btn" data-tab="guests" onclick="switchTab('guests')">👥 Guests</button>
+    <button class="tab-btn" data-tab="info" onclick="switchTab('info')">ℹ Info</button>
+  </div>
+
+  <!-- ── LIST TAB ─────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-list">
+    <div class="search-row">
+      <input type="search" class="search-input" id="search-input" placeholder="Search episodes, codes, notes… e.g. 3x87, Laudna, FCG, Solstice" oninput="onSearch(this.value)">
+      <button class="search-clear" id="search-clear" onclick="document.getElementById('search-input').value='';onSearch('')" style="display:none">×</button>
+    </div>
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all" onclick="applyFilter('all')">All</button>
+      <button class="filter-btn" data-filter="essential" onclick="applyFilter('essential')">Essential</button>
+      <button class="filter-btn" data-filter="unwatched" onclick="applyFilter('unwatched')">Unwatched</button>
+      <div class="filter-sep"></div>
+      <button class="filter-btn fmt-active" data-fmt="all" onclick="applyFmtFilter('all')">All Formats</button>
+      <button class="filter-btn" data-fmt="must" onclick="applyFmtFilter('must')">📺 Must Watch</button>
+      <button class="filter-btn" data-fmt="pod" onclick="applyFmtFilter('pod')">🎙 Podcast OK</button>
+    </div>
+    <div class="ws-legend">
+      <div class="ws-leg-item"><span class="ws-leg-icon" style="background:rgba(0,0,0,0.3);border-color:#6a5030;color:#6a5030">○</span><span class="ws-leg-label">Unwatched</span></div>
+      <div class="ws-leg-item"><span class="ws-leg-icon" style="background:#1a4a18;border-color:#3a8832;color:#60c060">✓</span><span class="ws-leg-label">Watched</span></div>
+      <div class="ws-leg-item"><span class="ws-leg-icon" style="background:#3a2c00;border-color:#7a6000;color:#c8a000">◐</span><span class="ws-leg-label">In Progress</span></div>
+      <div class="ws-leg-item"><span class="ws-leg-icon" style="background:#282828;border-color:#484848;color:#787878">—</span><span class="ws-leg-label">Skipped</span></div>
+      <span class="ws-leg-hint">tap to cycle →</span>
+    </div>
+    <div class="search-results-label" id="search-results-label" style="display:none"></div>
+    <div id="sections-container"></div>
+  </div>
+
+  <!-- ── PLANNER TAB ──────────────────────────────────── -->
+  <div class="tab-pane" id="tab-planner" style="display:none">
+    <div class="planner-card">
+      <div class="planner-title">✦ &nbsp; Pace Planner</div>
+      <div class="planner-epw">
+        <div class="epw-label">Essential episodes per week:</div>
+        <div class="epw-controls">
+          <button class="epw-btn" onclick="setEpw(state.plannerEpw-1)">−</button>
+          <span class="epw-val" id="p-epw">2</span>
+          <button class="epw-btn" onclick="setEpw(state.plannerEpw+1)">+</button>
+        </div>
+        <input type="range" class="epw-range" id="p-range" min="1" max="12" value="2" oninput="setEpw(Number(this.value))">
+      </div>
+      <div class="planner-stats">
+        <div class="stat-card"><div class="stat-label">Remaining</div><div class="stat-val" id="p-rem">—</div></div>
+        <div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-val" id="p-inp">—</div></div>
+        <div class="stat-card"><div class="stat-label">Done</div><div class="stat-val" id="p-don">—</div></div>
+        <div class="stat-card"><div class="stat-label">Finish Date</div><div class="stat-val" id="p-fin">—</div></div>
+      </div>
+      <div class="planner-note" id="p-note"></div>
+      <div class="planner-fine">~4 hrs/ep average · Essential content only · CR Abridged on Beacon cuts eps to 60–90 min</div>
+    </div>
+  </div>
+
+  <!-- ── GUESTS TAB ───────────────────────────────────── -->
+  <div class="tab-pane" id="tab-guests" style="display:none">
+    <div class="guests-intro">
+      Returning characters and guest players from Campaigns 1 &amp; 2 and Exandria Unlimited who appear in Campaign 3.
+      No episode outcomes are revealed — only which arcs they appear in.
+    </div>
+    <div class="guest-cat">
+      <div class="guest-cat-hdr" onclick="toggleGuestCat('c1')">
+        <span class="guest-cat-label">Campaign 1 — Vox Machina</span>
+        <span class="guest-cat-count" id="gcat-arrow-c1">4 ▲</span>
+      </div>
+      <div class="guest-cat-body open" id="gcat-body-c1" style="--cat-col:#9b4a0a">
+</div>
+    </div>
+<div class="guest-cat">
+      <div class="guest-cat-hdr" onclick="toggleGuestCat('c2')">
+        <span class="guest-cat-label">Campaign 2 — The Mighty Nein</span>
+        <span class="guest-cat-count" id="gcat-arrow-c2">2 ▲</span>
+      </div>
+      <div class="guest-cat-body open" id="gcat-body-c2" style="--cat-col:#1a3a7a">
+</div>
+    </div>
+<div class="guest-cat">
+      <div class="guest-cat-hdr" onclick="toggleGuestCat('exu')">
+        <span class="guest-cat-label">Exandria Unlimited</span>
+        <span class="guest-cat-count" id="gcat-arrow-exu">2 ▲</span>
+      </div>
+      <div class="guest-cat-body open" id="gcat-body-exu" style="--cat-col:#1a5c26">
+</div>
+    </div>
+<div class="guest-cat">
+      <div class="guest-cat-hdr" onclick="toggleGuestCat('guest')">
+        <span class="guest-cat-label">Notable Guest Players</span>
+        <span class="guest-cat-count" id="gcat-arrow-guest">3 ▲</span>
+      </div>
+      <div class="guest-cat-body open" id="gcat-body-guest" style="--cat-col:#5a4030">
+</div>
+    </div>
+  </div>
+
+  <!-- ── INFO TAB ─────────────────────────────────────── -->
+  <div class="tab-pane" id="tab-info" style="display:none">
+    <div class="info-card">
+      <div class="info-card-title">✦ &nbsp; Watch Order</div>
+      <div class="info-body">
+        <strong>1.</strong> ExU Prime (8 eps) before C3.<br>
+        <strong>2.</strong> C3 Arc 1 — pause at 3x18 for ExU: Kymal, then ExU: Calamity before Arc 2.<br>
+        <strong>3.</strong> C3 Arc 2 — MN Reunited Pt 1 &amp; 2 in Nov–Dec 2022 slots.<br>
+        <strong>4.</strong> C3 Arcs 3–4 — Echoes of the Solstice in Oct 2023 slot (around 3x70).<br>
+        <strong>5.</strong> C3 Arcs 5–8 plus Downfall. Finale = 8.5 hrs.<br>
+        <strong>6.</strong> C3 Wrap-Up → ExU: Divergence → Wildemount Wildlings.<br>
+        <strong>7.</strong> Live chain: TPK, Tag Team ×2, Oaths and Ash, Jester and Fjord's Wedding.<br>
+        <strong>Aftershow:</strong> 4-Sided Dive after the C3 eps it covers. Fine as a podcast.
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">✦ &nbsp; Video vs Podcast</div>
+      <div class="info-body">
+        <strong>Must Watch</strong> episodes have major emotional or plot-defining moments where the cast's facial performance and physical reactions are essential. Podcast is fine for investigation, travel, or planning episodes.<br><br>
+        <strong>Acceleration:</strong> 1.25–1.5× speed (barely noticeable with voice actors) · CR Abridged on Beacon (60–90 min edits) · 4-Sided Dive as a commute podcast · Dani Carr's weekly recaps to pre-read before a Must Watch episode.
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">✦ &nbsp; Key Resources</div>
+      <div class="resource-grid">
+        <div class="resource-item"><a href="https://critrole.com/tag/campaign-3" target="_blank" class="resource-link">Critical Recaps ↗</a><div class="resource-desc">Dani Carr's official weekly recaps — every C3 episode.</div></div>
+        <div class="resource-item"><a href="https://beacon.tv" target="_blank" class="resource-link">Beacon ↗</a><div class="resource-desc">$6/mo — CR Abridged, Cooldown, Fireside Chats, early VOD.</div></div>
+        <div class="resource-item"><a href="https://criticalrole.fandom.com" target="_blank" class="resource-link">CR Wiki ↗</a><div class="resource-desc">Full summaries, character pages, lore.</div></div>
+        <div class="resource-item"><a href="https://critrolestats.com" target="_blank" class="resource-link">CritRoleStats ↗</a><div class="resource-desc">Fan stats — kill counts, nat 20s, session times.</div></div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">✦ &nbsp; Setting Up Auto-Sync (GitHub Gist)</div>
+      <div class="info-body">
+        <strong>Step 1</strong> — Sign in to <a href="https://github.com" target="_blank">github.com</a> (or create a free account).<br>
+        <strong>Step 2</strong> — Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Name it "CR Tracker", set expiry to <em>No expiration</em>, tick the <strong>gist</strong> checkbox, click <em>Generate token</em>. Copy the token.<br>
+        <strong>Step 3</strong> — Click <strong>☁ Sync</strong> at the top of this page. Paste your token, then click <em>✦ Create New Gist for Me</em>.<br>
+        <strong>Step 4</strong> — Done. Progress now syncs automatically every time you mark an episode watched.<br><br>
+        <strong>On another device</strong> — open the same URL, go to ☁ Sync, paste the <em>same token</em> and the <em>same Gist ID</em>, click <em>Save &amp; Connect</em>. Progress loads automatically.
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-title">✦ &nbsp; About This Tracker</div>
+      <div class="info-body">
+        Progress is saved automatically to your browser's localStorage and persists between visits.
+        Use the <strong>Backup</strong> button to export a text copy of your progress — save it to Notes or email it to yourself to transfer between browsers or devices.
+        Data current to late 2025. Format tags are community-informed.
+      </div>
+    </div>
+  </div>
+
+  <div class="site-footer">
+    ✦ &nbsp; Tap the watch circle to cycle states: unwatched → watched → in progress → skipped &nbsp; ✦<br>
+    Progress saves automatically to this browser. Use Backup to transfer between devices.
+  </div>
+
+</div><!-- #app -->
+
+<script>
+// All episode/section data for the CR tracker
+const G = {
+  bg:"#08060400",s:"#140e08",s2:"#1c1208",s3:"#241608",
+  bd:"#4a3618",bd2:"#60481e",
+  tx:"#ede0c8",mu:"#9a8060",fa:"#5a4030",
+  go:"#c8a844",g2:"#e8c860",g3:"#a07830",
+  c3:"#8b1a1a",eu:"#1a5c26",sp:"#7a6000",
+  as:"#162a6e",ca:"#4a1268",bc:"#0e4848",
+  po:"#30300e",li:"#7a3c08",dh:"#102a50"
+};
+const FM = {
+  ve:{l:"Must Watch",bg:"#5c1400",tx:"#ffa870"},
+  v: {l:"Video",    bg:"#302000",tx:"#d0a840"},
+  p: {l:"Podcast",  bg:"#102010",tx:"#70a870"}
+};
+const FT = {exu:"v",special:"ve",aftershow:"p",candela:"p",beacon:"p",post:"v",live:"ve",daggerheart:"v"};
+const WS = ["unwatched","watched","progress","skipped"];
+const WM = {
+  unwatched:{i:"○",bg:"rgba(0,0,0,0.3)",bd:"#6a5030",co:"#6a5030"},
+  watched:  {i:"✓",bg:"#1a4a18",       bd:"#3a8832",co:"#60c060"},
+  progress: {i:"◐",bg:"#3a2c00",       bd:"#7a6000",co:"#c8a000"},
+  skipped:  {i:"—",bg:"#282828",        bd:"#484848",co:"#787878"}
+};
+const TC = {
+  c3:"#6a1010",exu:"#103c18",special:"#504000",
+  aftershow:"#101c50",candela:"#300860",beacon:"#083030",
+  post:"#202008",live:"#582808",daggerheart:"#0c1e3a"
+};
+const CF = {
+  1:"ve",7:"v",10:"v",13:"ve",14:"v",17:"ve",18:"v",25:"v",26:"v",
+  33:"ve",34:"ve",35:"ve",36:"v",37:"v",38:"ve",39:"v",45:"v",46:"v",
+  50:"v",51:"ve",52:"ve",53:"v",60:"ve",61:"v",65:"v",67:"v",68:"v",
+  69:"v",70:"v",73:"v",76:"v",77:"v",79:"ve",80:"v",82:"v",83:"v",
+  84:"v",85:"v",86:"v",87:"ve",88:"ve",89:"v",90:"v",93:"ve",94:"v",
+  95:"v",97:"v",98:"ve",99:"v",100:"v",101:"v",104:"v",105:"v",
+  107:"v",109:"v",110:"v",111:"v",112:"ve",113:"ve",114:"ve",
+  115:"v",116:"v",117:"v",118:"v",119:"v",120:"v",121:"ve"
+};
+const EN = {
+  1:"Premiere. Three groups meet in Jrusar.",
+  13:"7th anniv simulcast — the ball and ring heist.",
+  17:"Laudna-Delilah reveal, Orym's husband, Fearne's parents.",
+  33:"Otohan Thull attacks — brutal, multi-PC crisis.",
+  34:"Laudna dies. Coin flip. Campaign's first major emotional peak.",
+  38:"Laudna resurrection with Percy, Vex and Pike.",
+  50:"Beau and Caleb as Matt-played NPCs ahead of the Solstice.",
+  51:"THE APOGEE SOLSTICE — Vax appears, party SPLITS.",
+  52:"Post-Solstice fallout. Imogen's powers unleash.",
+  60:"Bor'Dor exposed. First PC-on-PC murder in CR.",
+  77:"Ashton and Fearne major conflict.",
+  79:"Feywild: Nana Morri, Fearne family lore, visual spectacle.",
+  83:"Beacon launches. Cooldown unlocks.",
+  87:"FCG sacrifices himself. Sam's character dies.",
+  88:"FCG aftermath. Sam takes leave.",
+  90:"Sam returns with new character Braius.",
+  93:"Dorian returns.",
+  98:"Live show at the Greek Theatre, Los Angeles.",
+  112:"Full Mighty Nein cast reprises C2 characters.",
+  113:"Full Vox Machina reprises C1 — all three campaigns at once.",
+  114:"Three-campaign climax concludes.",
+  121:"FINALE — 8.5 hours."
+};
+const SUM = {
+  prereq:"Eight episodes in Tal'Dorei. Dorian, Fearne and Orym carry directly into C3. Light and chaotic, run by Aabria Iyengar.",
+  c3arc1:"Three groups collide in Jrusar, a city of mountain spires. A patron's job becomes something darker. Character-establishing and mystery-forward. Robbie Daymond is a full party member.",
+  kymal:"Crown Keepers return for a casino heist in Kymal. Fun two-parter that resolves ExU Prime threads and clarifies why Dorian exits Bells Hells.",
+  calamity:"Four episodes 1,500 years in the past. Brilliant figures try and fail to prevent a catastrophe they helped create. DM'd by Brennan. Dark, tragic, legendary.",
+  c3arc2:"Bells Hells leave Jrusar across wider Marquet. Personal backstories cut deep. C3's most emotionally brutal moments.",
+  mnr:"The Mighty Nein reunite years after C2, addressing where those characters are now. Canon and emotionally satisfying.",
+  c3arc3:"The campaign builds to its first enormous turning point. The world changes. The party is scattered.",
+  c3arc4:"The aftermath. Bells Hells split, each half navigating different situations with new companions. Quieter and character-focused.",
+  mne:"Mighty Nein at a London live show during C3's timeline. Travis proposes to Laura in-character. Canon.",
+  c3arc5:"Reunited, Bells Hells pursue a mission to somewhere nobody has visited. One of C3's most gut-wrenching individual losses.",
+  c3arc6:"Pressing forward in hostile territory. A profound personal loss reshapes the group. Beacon launches.",
+  downfall:"Three episodes in Exandria's distant past. Run by Brennan, different cast. Tragic and lore-dense.",
+  c3arc8:"The endgame. Allies from all three campaigns assemble. Finale runs over eight hours.",
+  aftershow:"Monthly talk-show discussing the previous month's C3 episodes. Works well as a podcast.",
+  candela:"CR's horror anthology in Newfaire, 1907 — entirely separate from Exandria. Self-contained chapters.",
+  postc3:"Wrap-up, ExU: Divergence (DM'd by Brennan), and Wildemount Wildlings.",
+  bhlive:"Canon live shows continuing Bells Hells post-finale. Each picks up from the last.",
+  daggerheart:"CR's own TTRPG. NOT Exandria — a separate original world. Open-beta one-shots then Age of Umbra.",
+  beacon:"CR Cooldown and Fireside Chats. Not story content. Work as background audio."
+};
+function yt(q){return"https://www.youtube.com/results?search_query="+encodeURIComponent(q);}
+function ep(id,code,title,type,plat,pri,fmt,url,notes,extra){
+  const o={id,code,title,type,platform:plat,priority:pri,format:fmt,watchUrl:url};
+  if(notes)o.notes=notes;
+  if(extra)Object.assign(o,extra);
+  return o;
+}
+const ARCS=[{id:"arc1",s:1,e:26},{id:"arc2",s:27,e:46},{id:"arc3",s:47,e:67},{id:"arc4",s:68,e:73},{id:"arc5",s:74,e:86},{id:"arc6",s:87,e:99},{id:"arc8",s:100,e:121}];
+const C3E=[];
+for(const arc of ARCS)for(let n=arc.s;n<=arc.e;n++)C3E.push(ep("c"+n,"3x"+String(n).padStart(2,"0"),"Episode "+n,"c3",n>=83?"both":"youtube","essential",CF[n]||"p",yt("Critical Role C3E"+n+" Campaign 3"),EN[n],{arc:arc.id}));
+const DF=[1,2,3].map(n=>ep("df"+n,"Downfall E"+n,"Downfall — Episode "+n,"c3","both","essential","ve",yt("Critical Role Downfall episode "+n),n===1?"DM'd by Brennan. Exandrian past. Watch not podcast.":null,{arc:"arc7"}));
+const EXP=[
+  ep("ep1","ExU 1x01","The Nameless Ones","exu","youtube","essential","v",yt("Exandria Unlimited episode 1"),"Watch before C3. Dorian, Fearne and Orym debut here."),
+  ep("ep2","ExU 1x02","Welcome to the Neighborhood","exu","youtube","essential","v",yt("Exandria Unlimited episode 2")),
+  ep("ep3","ExU 1x03","A Glorious Return","exu","youtube","essential","v",yt("Exandria Unlimited episode 3")),
+  ep("ep4","ExU 1x04","By the Road","exu","youtube","essential","v",yt("Exandria Unlimited episode 4")),
+  ep("ep5","ExU 1x05","A Test of Worth","exu","youtube","essential","v",yt("Exandria Unlimited episode 5")),
+  ep("ep6","ExU 1x06","A Fog Lifted","exu","youtube","essential","v",yt("Exandria Unlimited episode 6")),
+  ep("ep7","ExU 1x07","Beyond the Heart City","exu","youtube","essential","v",yt("Exandria Unlimited episode 7")),
+  ep("ep8","ExU 1x08","What Comes Next","exu","youtube","essential","v",yt("Exandria Unlimited episode 8")),
+  ep("ep9","ExU Wrap","Wrap-Up Discussion","exu","youtube","recommended","p",yt("Exandria Unlimited wrap up"))
+];
+const EXK=[ep("k1","ExUKy 1","A Heist with Many Pieces","exu","youtube","essential","v",yt("Exandria Unlimited Kymal part 1"),"Watch after 3x18, then continue C3."),ep("k2","ExUKy 2","The Momentum of Murder","exu","youtube","essential","v",yt("Exandria Unlimited Kymal part 2"))];
+const EXC=[ep("xc1","ExUCal 1","Excelsior","exu","youtube","essential","ve",yt("Exandria Unlimited Calamity episode 1"),"C3 hiatus May-Jun 2022. After 3x26. DM'd by Brennan. Video not podcast."),ep("xc2","ExUCal 2","Bitterness and Dread","exu","youtube","essential","ve",yt("Exandria Unlimited Calamity episode 2")),ep("xc3","ExUCal 3","Blood and Shadow","exu","youtube","essential","ve",yt("Exandria Unlimited Calamity episode 3")),ep("xc4","ExUCal 4","Fire and Ruin","exu","youtube","essential","ve",yt("Exandria Unlimited Calamity episode 4")),ep("xc5","ExUCal W","Wrap-Up","exu","youtube","recommended","p",yt("Exandria Unlimited Calamity wrap up"))];
+const MNS=[ep("m1","Sx73","MN Reunited — Part 1","special","youtube","essential","ve",yt("Mighty Nein Reunited Part 1 2022"),"Canon. Watch in Nov 2022 slot during Arc 2."),ep("m2","Sx74","MN Reunited — Part 2","special","youtube","essential","ve",yt("Mighty Nein Reunited Part 2 2022")),ep("m3","OSx55","MN: Echoes of the Solstice","special","youtube","essential","ve",yt("Mighty Nein Echoes Solstice Wembley 2023"),"Canon. Live at Wembley. Travis proposes to Laura. Watch around 3x70.")];
+const CN=["Needle and Thread","Tide and Bone","Crimson Mirror"];
+const CFMT=["v","p","v","v","p","v","v","p","v"];
+const CAND=CFMT.map((fmt,i)=>{const ch=Math.floor(i/3)+1,en=(i%3)+1;return ep("co"+i,"CO Ch"+ch+" E"+en,"Circle of "+CN[ch-1]+" E"+en,"candela","youtube","optional",fmt,yt("Candela Obscura "+CN[ch-1]+" episode "+en),i===0?"NOT set in Exandria. Horror anthology.":null);});
+CAND.push(ep("co9","CO 2024+","Season 2 — see critrole.com","candela","youtube","optional","v","https://critrole.com/shows/candela-obscura/"));
+const FSD_RAW=[[1,"Silken Secrets","est. 3x01-3x18",!1],[2,"Just the Facts","est. 3x19-3x22",!1],[3,"Fly Into The Danger Zone","est. 3x23-3x26",!1],[4,"Independent Witches","est. 3x27-3x29",!1],[5,"From Dusk Till Faun","est. 3x30-3x33",!1],[6,"Liam Laudna-Hands","est. 3x34-3x37",!1],[7,"Fun Scary","est. 3x35-3x37",!1],[8,"Why Are You Like This?!","confirmed through 3x38",!0],[9,"That's Just Right","est. through 3x41",!1],[10,"To Be Continued!","est. through 3x44",!1],[11,"Wildemount Things","est. through 3x47",!1],[12,"Discussing the Bits","est. through 3x50",!1],[13,"Gathering the Spoils","est. through 3x53",!1],[14,"A Very Special Six-Sided Dive","est. through 3x57",!1],[15,"Sit Down Get Comfy","est. through 3x61",!1],[16,"Exandrian Sommelier","est. through 3x64",!1],[17,"Night of the Living Bits","est. through 3x67",!1],[18,"What the Fey","est. through 3x70",!1],[19,"Discussing a Difficult Episode","est. through 3x73",!1],[20,"Discussing Up To C3E82","confirmed through 3x82",!0],[21,"Episodes 83-85","est. through 3x85",!1],[22,"Tavern Adventures","est. through 3x88",!1],[23,"Still Blessed","confirmed through 3x93",!0],[24,"Swordgate","est. through 3x96",!1],[25,"A Familiar Mess","est. through 3x98",!1],[26,"Oh My Gods","est. through 3x101",!1],[27,"Queries and Quandaries","confirmed through 3x105",!0],[28,"Way of the Swordguy","est. through 3x110",!1],[29,"The Tower","est. through 3x114",!1],[30,"What Bits May Come","confirmed through 3x121",!0]];
+const FSD=FSD_RAW.map(r=>ep("f"+r[0],"4SDx"+String(r[0]).padStart(2,"0"),"4-Sided Dive: "+r[1],"aftershow","youtube","recommended","p",yt("Critical Role 4-Sided Dive "+r[1]),"Covers "+r[2]+(r[3]?" (confirmed)":" (est.)")+". Watch AFTER those C3 eps.",{conf:r[3]}));
+const POST=[ep("wu","Sx94","Wrap Up: Campaign 3","post","youtube","essential","ve",yt("Critical Role Campaign 3 Wrap Up 2025"),"Full cast. Watch immediately after the finale."),ep("d1","ExUDiv 1","ExU: Divergence — Ep 1","post","youtube","essential","ve",yt("Exandria Unlimited Divergence episode 1 2025"),"Post-C3. DM'd by Brennan. Exandria's ancient past."),ep("d2","ExUDiv 2","ExU: Divergence — Ep 2","post","youtube","essential","v",yt("Exandria Unlimited Divergence episode 2 2025")),ep("d3","ExUDiv 3","ExU: Divergence — Ep 3","post","youtube","essential","v",yt("Exandria Unlimited Divergence episode 3 2025")),ep("d4","ExUDiv 4","ExU: Divergence — Finale","post","youtube","essential","ve",yt("Exandria Unlimited Divergence finale 2025")),ep("w1","WWx01","Wildemount Wildlings Ep 1","post","youtube","recommended","v",yt("Wildemount Wildlings episode 1 2025"),"Beau and Yasha as camp counselors."),ep("w2","WWx02","Wildemount Wildlings Ep 2","post","youtube","recommended","p",yt("Wildemount Wildlings episode 2 2025")),ep("w3","WWx03","Wildemount Wildlings Ep 3","post","youtube","recommended","v",yt("Wildemount Wildlings episode 3 2025"))];
+const LIV=[ep("l0","Charity","LA Wildfire Charity One-Shot","live","youtube","optional","v",yt("Critical Role Bells Hells wildfire charity 2025"),"Non-canon.",{canon:!1}),ep("l1","OSx67","Total Party Kill — Chicago (May 2025)","live","youtube","essential","ve",yt("Critical Role Total Party Kill Chicago 2025"),"All three campaigns in a game-show battle.",{canon:!0}),ep("l2","OSx70","Tag Team: Misty Ascent — Sydney (Jun 2025)","live","youtube","essential","ve",yt("Critical Role Tag Team Misty Ascent Sydney 2025"),"Canon. MN plus Bells Hells. Part 1.",{canon:!0}),ep("l3","OSx71","Tag Team: Beyond the Shroud — Melbourne (Jun 2025)","live","youtube","essential","ve",yt("Critical Role Tag Team Beyond Shroud Melbourne 2025"),"Canon. Continuation of Misty Ascent.",{canon:!0}),ep("l4","OSx72","Oaths and Ash — Indianapolis (Aug 2025)","live","youtube","essential","ve",yt("Critical Role Oaths Ash Indianapolis 2025"),"Canon. Fearne's dark bargains. DAGGERHEART. Contains C4 announcement.",{canon:!0}),ep("l5","OSx75","Jester and Fjord's Wedding — Radio City (Oct 2025)","live","youtube","essential","ve",yt("Critical Role Jester Fjord Wedding Radio City 2025"),"Canon. Culmination of the romance arc.",{canon:!0})];
+const DH=[ep("h1","DH Beta 1","The Menagerie — Session Zero + One-Shot","daggerheart","youtube","recommended","v",yt("Critical Role Daggerheart Menagerie 2024"),"First CR Daggerheart content. NOT Exandria."),ep("h2","OSx59","The Menagerie Returns!","daggerheart","youtube","recommended","v",yt("Critical Role Menagerie Returns Daggerheart 2024")),ep("h3","OSx61","Ménagerie à Trois","daggerheart","youtube","recommended","p",yt("Critical Role Menagerie Trois Daggerheart 2024")),ep("h4","OSx62","Daggerheart Critmas Story — Live","daggerheart","youtube","recommended","ve",yt("Critical Role Daggerheart Critmas Story 2024"),"Non-canon. 1980s Mighty Nein AU.",{canon:!1}),ep("h5","AUx00","Age of Umbra — Session Zero","daggerheart","youtube","essential","v",yt("Critical Role Age of Umbra Session Zero 2025"),"Watch before Episode 1."),ep("h6","AUx01","Age of Umbra — Episode 1","daggerheart","youtube","essential","ve",yt("Critical Role Age of Umbra episode 1 2025"),"Premiere May 29 2025. NOT Exandria. Grimdark survival."),ep("h7","AUx02","Age of Umbra — Episode 2","daggerheart","youtube","essential","v",yt("Critical Role Age of Umbra episode 2 2025")),ep("h8","AUx03","Age of Umbra — Episode 3","daggerheart","youtube","essential","v",yt("Critical Role Age of Umbra episode 3 2025")),ep("h9","AUx04","Age of Umbra — Episode 4","daggerheart","youtube","essential","v",yt("Critical Role Age of Umbra episode 4 2025")),ep("ha","AUx05","Age of Umbra — Episode 5","daggerheart","youtube","essential","v",yt("Critical Role Age of Umbra episode 5 2025")),ep("hb","AUx06","Age of Umbra — Episode 6","daggerheart","youtube","essential","v",yt("Critical Role Age of Umbra episode 6 2025")),ep("hc","AUx07","Age of Umbra — Episode 7","daggerheart","youtube","essential","v",yt("Critical Role Age of Umbra episode 7 2025")),ep("hd","AUx08","Age of Umbra — Finale","daggerheart","youtube","essential","ve",yt("Critical Role Age of Umbra episode 8 finale 2025"),"Season 1 Finale. Season 2 confirmed.")];
+const BCN=[];for(let bi=0;bi<39;bi++){const bn=83+bi;BCN.push(ep("cl"+bn,"Cooldown C3E"+bn,"Cooldown — After C3 Ep "+bn,"beacon","beacon","optional","p","https://beacon.tv",bn===83?"9-20 min post-ep reactions. Beacon exclusive.":null));}
+BCN.push(ep("fc","Fireside","Fireside Chats (from May 2024)","beacon","beacon","optional","p","https://beacon.tv","Monthly live Q&As. Beacon exclusive."));
+const SECS=[
+  {id:"prereq",   col:"#2c6e3a",label:"📖  Prerequisite — Exandria Unlimited Prime",      desc:"Watch before C3. Dorian, Fearne and Orym debut here.",items:EXP},
+  {id:"c3arc1",   col:"#8b1a1a",label:"🔔  C3 Arc 1 — Destiny's Call  (3x01–26)",         desc:"After 3x18 → ExU: Kymal. After 3x26 → ExU: Calamity. Then Arc 2.",items:C3E.filter(e=>e.arc==="arc1")},
+  {id:"kymal",    col:"#2c6e3a",label:"⚡  ExU: Kymal  (watch after 3x18)",                desc:"2-part Crown Keepers heist. Aired Mar 2022.",items:EXK},
+  {id:"calamity", col:"#2c6e3a",label:"⚡  ExU: Calamity  (after 3x26, before Arc 2)",     desc:"C3 hiatus May–Jun 2022. DM'd by Brennan. Video not podcast.",items:EXC},
+  {id:"c3arc2",   col:"#8b1a1a",label:"🔔  C3 Arc 2 — Sand and Shadows  (3x27–46)",       desc:"MN Reunited Pt1+2 in Nov–Dec 2022 slots alongside.",items:C3E.filter(e=>e.arc==="arc2")},
+  {id:"mnr",      col:"#7a6000",label:"⚡  Mighty Nein Reunited  (Nov–Dec 2022)",          desc:"Canon. C2 cast returns.",items:[MNS[0],MNS[1]]},
+  {id:"c3arc3",   col:"#8b1a1a",label:"🔔  C3 Arc 3 — The Solstice Approaches  (47–67)",  desc:"Candela Obscura Ch1–2 on last Thursdays (optional).",items:C3E.filter(e=>e.arc==="arc3")},
+  {id:"c3arc4",   col:"#8b1a1a",label:"🔔  C3 Arc 4 — Separated  (3x68–73)",             desc:"Echoes of the Solstice in Oct 2023 slot.",items:C3E.filter(e=>e.arc==="arc4")},
+  {id:"mne",      col:"#7a6000",label:"⚡  Echoes of the Solstice  (Oct 2023)",            desc:"Canon live at Wembley. Travis proposes in-character.",items:[MNS[2]]},
+  {id:"c3arc5",   col:"#8b1a1a",label:"🔔  C3 Arc 5 — Race to the Moon  (3x74–86)",       desc:"Candela Obscura Ch3 on last Thursdays (optional).",items:C3E.filter(e=>e.arc==="arc5")},
+  {id:"c3arc6",   col:"#8b1a1a",label:"🔔  C3 Arc 6 — Ruidus Recon  (3x87–99)",           desc:"Beacon launches ep83+. FCG dies this arc.",items:C3E.filter(e=>e.arc==="arc6")},
+  {id:"downfall", col:"#8b1a1a",label:"🔔  C3 Arc 7 — Downfall  (3-ep miniseries)",        desc:"Last-Thursday slots. DM'd by Brennan. Watch as video.",items:DF},
+  {id:"c3arc8",   col:"#8b1a1a",label:"🔔  C3 Arc 8 — The Final Arc  (3x100–121)",        desc:"MN returns (3x112–114). Vox Machina returns. Finale = 8.5 hrs.",items:C3E.filter(e=>e.arc==="arc8")},
+  {id:"aftershow",col:"#1e3888",label:"📺  4-Sided Dive  (30 eps, 2022–2024)",             desc:"Monthly aftershow. Watch AFTER the C3 eps it covers. Works as podcast.",items:FSD},
+  {id:"candela",  col:"#5a1880",label:"🎭  Optional — Candela Obscura",                   desc:"NOT set in Exandria. Fairelands horror anthology.",items:CAND},
+  {id:"postc3",   col:"#505008",label:"📦  Post-Campaign 3  (Feb–Apr 2025)",               desc:"Wrap-up, ExU: Divergence, Wildemount Wildlings.",items:POST},
+  {id:"bhlive",   col:"#8b4a10",label:"🎪  Bells Hells Live Shows  (2025 chain)",          desc:"Canon post-C3 chain: TPK, Tag Team ×2, Oaths and Ash, Wedding.",items:LIV},
+  {id:"daggerheart",col:"#183860",label:"⚙  Daggerheart  (not Exandria)",                desc:"NOT Exandria. Menagerie one-shots plus Age of Umbra.",items:DH},
+  {id:"beacon",   col:"#0c5050",label:"🔒  Beacon Exclusive  (beacon.tv · $6/mo)",         desc:"Cooldown plus Fireside Chats. Supplements, not story.",items:BCN}
+];
+const ALL=SECS.flatMap(s=>s.items);
+const GUESTS=[
+  {id:"g1",cat:"c1",must:!0,name:"Keyleth",player:"Marisha Ray (C1)",eps:"Major NPC from Arc 3; reprises in 3x112–114",desc:"Voice of the Tempest, decades older. Significant role in Solstice fallout."},
+  {id:"g2",cat:"c1",must:!0,name:"Percy and Vex de Rolo",player:"Taliesin and Laura Bailey (C1)",eps:"3x37–3x38 Whitestone arc",desc:"Rulers of Whitestone. Critical for the Laudna resurrection ritual."},
+  {id:"g3",cat:"c1",must:!0,name:"Pike Trickfoot",player:"Ashley Johnson (C1)",eps:"3x38",desc:"Legendary cleric. Brief but critical for the resurrection ritual."},
+  {id:"g4",cat:"c1",must:!0,name:"Vox Machina (Full Party)",player:"Full C1 cast",eps:"3x112–3x114 Final Arc",desc:"Complete C1 cast reprises roles alongside Bells Hells and Mighty Nein simultaneously."},
+  {id:"g5",cat:"c2",must:!1,name:"Beau and Caleb (as NPCs)",player:"Matt Mercer playing C2",eps:"3x50–3x51",desc:"Brief Matt-controlled NPC appearances ahead of the Apogee Solstice."},
+  {id:"g6",cat:"c2",must:!0,name:"Mighty Nein (Full Party)",player:"Full C2 cast",eps:"3x112–3x114 Final Arc",desc:"Complete C2 cast reprises roles years after Campaign 2."},
+  {id:"g7",cat:"exu",must:!0,name:"Dorian Storm",player:"Robbie Daymond",eps:"3x01–3x14 full member; returns 3x93–3x121",desc:"Joins Bells Hells for the first 14 episodes then returns later."},
+  {id:"g8",cat:"exu",must:!1,name:"Crown Keepers",player:"Anjali Bhimani and others",eps:"Arc 4 area 3x68–3x73",desc:"ExU Prime characters appear during the post-Solstice separated arc."},
+  {id:"g9",cat:"guest",must:!0,name:"Bor'Dor Dog'Son",player:"Utkarsh Ambudkar",eps:"Separated arc 3x53–3x60",desc:"Appears as a simple sheep farmer. His storyline ends in one of C3's most shocking moments."},
+  {id:"g10",cat:"guest",must:!1,name:"FRIDA and Prism Grimpoppy",player:"Christian Navarro and Emily Axford",eps:"Separated arc 3x53–3x67",desc:"FRIDA is an Aeormaton with similar origins to FCG. Prism is a shadar-kai wizard with a raven familiar."},
+  {id:"g11",cat:"guest",must:!1,name:"Deanna Leimert",player:"Aabria Iyengar",eps:"Arc 4 area 3x68–3x73",desc:"Gnome cleric and Chetney's ex. Strong guest run."}
+];
+const CATS=[{key:"c1",label:"Campaign 1 — Vox Machina",col:"#9b4a0a"},{key:"c2",label:"Campaign 2 — The Mighty Nein",col:"#1a3a7a"},{key:"exu",label:"Exandria Unlimited",col:"#1a5c26"},{key:"guest",label:"Notable Guest Players",col:"#5a4030"}];
+
+
+
+// ─── STORAGE ─────────────────────────────────────────────────
+const SK = 'cr_tracker_v1';
+const OLD_KEYS = ['cr_c3_v5','cr_c3_v4','cr_tracker_desktop_v1'];
+
+function saveProgress() {
+  try { localStorage.setItem(SK, JSON.stringify(state.progress)); } catch(e) {}
+  showSaveStatus('saved');
+}
+
+function loadSavedProgress() {
+  try {
+    const d = localStorage.getItem(SK);
+    if (d) return JSON.parse(d);
+    for (const k of OLD_KEYS) {
+      const old = localStorage.getItem(k);
+      if (old) {
+        const p = JSON.parse(old);
+        if (Array.isArray(p)) { const m={}; p.forEach(id=>m[id]='watched'); return m; }
+        if (p && typeof p==='object') return p;
+      }
+    }
+  } catch(e) {}
+  return {};
+}
+
+// ─── STATE ───────────────────────────────────────────────────
+const state = {
+  progress: loadSavedProgress(),
+  tab: 'list',
+  filter: 'all',
+  fmtFilter: 'all',
+  search: '',
+  openSections: new Set(),
+  openSummaries: new Set(),
+  openGuestCats: new Set(['c1','c2','exu']),
+  plannerEpw: 2,
+  showBackup: false,
+  saveTimer: null
+};
+
+// ─── SAVE STATUS ─────────────────────────────────────────────
+function showSaveStatus(status) {
+  const el = document.getElementById('save-status');
+  if (!el) return;
+  el.className = 'save-dot ' + status;
+  el.textContent = status === 'saving' ? 'Saving…' : status === 'saved' ? '✦ Saved' : '⚠ Save failed';
+  clearTimeout(state.saveTimer);
+  state.saveTimer = setTimeout(() => { el.className = 'save-dot'; el.textContent = ''; }, 2800);
+}
+
+// ─── PROGRESS TOGGLE ─────────────────────────────────────────
+function toggleEpisode(id) {
+  const cur = state.progress[id] || 'unwatched';
+  const next = WS[(WS.indexOf(cur) + 1) % WS.length];
+  if (next === 'unwatched') delete state.progress[id];
+  else state.progress[id] = next;
+  updateEpRow(id);
+  updateAllBars();
+  updateOverallBar();
+  updateNextUp();
+  saveProgress();
+}
+
+function markDone(id) {
+  state.progress[id] = 'watched';
+  updateEpRow(id);
+  updateAllBars();
+  updateOverallBar();
+  updateNextUp();
+  saveProgress();
+}
+
+function updateEpRow(id) {
+  const row = document.querySelector(`.ep-row[data-id="${id}"]`);
+  if (!row) return;
+  const st = state.progress[id] || 'unwatched';
+  const m = WM[st];
+  row.dataset.state = st;
+  const btn = row.querySelector('.watch-btn');
+  if (btn) {
+    btn.textContent = m.i;
+    btn.style.background = m.bg;
+    btn.style.borderColor = m.bd;
+    btn.style.color = m.co;
+    btn.title = st.charAt(0).toUpperCase() + st.slice(1) + ' — tap to change';
+  }
+  const tags = row.querySelector('.ep-tags');
+  if (tags) {
+    // Remove old state badges then re-add
+    tags.querySelectorAll('.state-badge').forEach(b=>b.remove());
+    if (st === 'progress') tags.insertAdjacentHTML('beforeend',`<span class="badge state-badge" style="background:#3a2c00;color:#c8a000">In Progress</span>`);
+    if (st === 'skipped') tags.insertAdjacentHTML('beforeend',`<span class="badge state-badge" style="background:#282828;color:#787878">Skipped</span>`);
+  }
+}
+
+// ─── PROGRESS BARS ───────────────────────────────────────────
+function updateAllBars() {
+  SECS.forEach(sec => {
+    const done = sec.items.filter(e => state.progress[e.id]==='watched').length;
+    const inp  = sec.items.filter(e => state.progress[e.id]==='progress').length;
+    const pct  = sec.items.length > 0 ? Math.round(done/sec.items.length*100) : 0;
+    const fill = document.getElementById('bar-'+sec.id);
+    if (fill) fill.style.width = pct+'%';
+    const cnt = document.getElementById('cnt-'+sec.id);
+    if (cnt) cnt.textContent = done+'/'+sec.items.length+(inp>0?' +'+inp:'');
+  });
+}
+
+function updateOverallBar() {
+  const done = ALL.filter(e=>state.progress[e.id]==='watched').length;
+  const pct = Math.round(done/ALL.length*100);
+  const fill = document.getElementById('overall-bar');
+  if (fill) fill.style.width = pct+'%';
+  const lbl = document.getElementById('overall-label');
+  if (lbl) lbl.textContent = done+'/'+ALL.length+' ('+pct+'%)';
+}
+
+// ─── NEXT UP ─────────────────────────────────────────────────
+function updateNextUp() {
+  const types = {c3:['c3'], comp:['exu','special'], live:['live']};
+  for (const [key,typeList] of Object.entries(types)) {
+    const item = ALL.find(e=>typeList.includes(e.type)&&(!state.progress[e.id]||state.progress[e.id]==='progress'));
+    const el = document.getElementById('next-'+key);
+    if (!el) continue;
+    if (!item) { el.innerHTML = `<div class="next-card-caught">All caught up! ✦</div>`; continue; }
+    const fmt = item.format||(FT[item.type]||'v');
+    const fm = FM[fmt]||FM.v;
+    const cols = {c3:'#8b1a1a',comp:'#1a5c26',live:'#7a3808'};
+    const txs = {c3:'#ffb0b0',comp:'#90d890',live:'#ffc080'};
+    el.innerHTML = `
+      <div class="next-card" style="--accent-col:${cols[key]}">
+        <div class="next-card-label">
+          ${key==='c3'?'Campaign 3':key==='comp'?'Companion':'Live Shows'}
+          <span class="badge" style="background:${fm.bg};color:${fm.tx}">${fm.l}</span>
+        </div>
+        <div class="next-card-title"><span class="next-card-code">${item.code}</span>${item.title}</div>
+        <div class="next-card-actions">
+          <a href="${item.watchUrl}" target="_blank" class="btn-watch" style="background:${cols[key]};color:${txs[key]}">▶ Watch</a>
+          <button class="btn-done" onclick="markDone('${item.id}')">✓ Done</button>
+        </div>
+      </div>`;
+  }
+}
+
+// ─── SECTION TOGGLE ──────────────────────────────────────────
+function toggleSection(id) {
+  const body = document.getElementById('sec-body-'+id);
+  const arrow = document.getElementById('sec-arrow-'+id);
+  if (!body) return;
+  if (state.openSections.has(id)) {
+    state.openSections.delete(id);
+    body.classList.remove('open');
+    if (arrow) arrow.textContent = '▼';
+  } else {
+    state.openSections.add(id);
+    body.classList.add('open');
+    if (arrow) arrow.textContent = '▲';
+  }
+}
+
+function toggleSummary(id) {
+  const el = document.getElementById('sec-sum-'+id);
+  const btn = document.getElementById('sec-info-'+id);
+  if (!el) return;
+  if (state.openSummaries.has(id)) {
+    state.openSummaries.delete(id);
+    el.classList.remove('open');
+    if (btn) btn.classList.remove('active');
+  } else {
+    state.openSummaries.add(id);
+    el.classList.add('open');
+    if (btn) btn.classList.add('active');
+  }
+}
+
+// ─── GUEST CAT TOGGLE ────────────────────────────────────────
+function toggleGuestCat(key) {
+  const body = document.getElementById('gcat-body-'+key);
+  const arrow = document.getElementById('gcat-arrow-'+key);
+  if (!body) return;
+  if (state.openGuestCats.has(key)) {
+    state.openGuestCats.delete(key);
+    body.classList.remove('open');
+    if (arrow) arrow.textContent = '▼';
+  } else {
+    state.openGuestCats.add(key);
+    body.classList.add('open');
+    if (arrow) arrow.textContent = '▲';
+  }
+}
+
+// ─── FILTERS ─────────────────────────────────────────────────
+function applyFilter(f) {
+  state.filter = f;
+  document.querySelectorAll('.filter-btn[data-filter]').forEach(b=>{
+    b.classList.toggle('active', b.dataset.filter===f);
+  });
+  rebuildList();
+}
+function applyFmtFilter(f) {
+  state.fmtFilter = f;
+  document.querySelectorAll('.filter-btn[data-fmt]').forEach(b=>{
+    b.classList.toggle('fmt-active', b.dataset.fmt===f);
+  });
+  rebuildList();
+}
+
+// ─── SEARCH ──────────────────────────────────────────────────
+let searchDebounce;
+function onSearch(val) {
+  state.search = val;
+  const cl = document.getElementById('search-clear');
+  if (cl) cl.style.display = val ? 'block' : 'none';
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(rebuildList, 180);
+}
+
+// ─── LIST REBUILD ─────────────────────────────────────────────
+function rebuildList() {
+  const container = document.getElementById('sections-container');
+  if (!container) return;
+  const q = state.search.toLowerCase();
+  const resultLabel = document.getElementById('search-results-label');
+
+  let totalFound = 0;
+  container.innerHTML = '';
+
+  SECS.forEach(sec => {
+    let items = sec.items;
+
+    // Priority filter
+    if (state.filter==='essential') items = items.filter(e=>e.priority==='essential');
+    else if (state.filter==='unwatched') items = items.filter(e=>!state.progress[e.id]||state.progress[e.id]==='progress');
+
+    // Format filter
+    if (state.fmtFilter==='must') items = items.filter(e=>(e.format||(FT[e.type]||'v'))==='ve');
+    else if (state.fmtFilter==='pod') items = items.filter(e=>(e.format||(FT[e.type]||'v'))==='p');
+
+    // Search
+    if (q) items = items.filter(e=>{
+      const hay = (e.code||'')+' '+(e.title||'')+' '+(e.notes||'');
+      return hay.toLowerCase().includes(q);
+    });
+
+    if (items.length === 0) return;
+    totalFound += items.length;
+
+    const done = items.filter(e=>state.progress[e.id]==='watched').length;
+    const inp  = items.filter(e=>state.progress[e.id]==='progress').length;
+    const pct  = items.length>0 ? Math.round(done/items.length*100) : 0;
+    const isOpen = state.openSections.has(sec.id) || !!q;
+    const hasSummary = !!SUM[sec.id];
+
+    const secEl = document.createElement('div');
+    secEl.className = 'section';
+    secEl.innerHTML = `
+      <div class="sec-header" style="--sec-col:${sec.col}">
+        <button class="sec-toggle" onclick="toggleSection('${sec.id}')">
+          <span class="sec-label">${sec.label}</span>
+          <span class="sec-count" id="cnt-${sec.id}">${done}/${items.length}${inp>0?' +'+inp:''}</span>
+          <div class="sec-bar-track"><div class="sec-bar-fill" id="bar-${sec.id}" style="width:${pct}%;background:${sec.col}"></div></div>
+          <span class="sec-arrow" id="sec-arrow-${sec.id}">${isOpen?'▲':'▼'}</span>
+        </button>
+        ${hasSummary?`<button class="sec-info-btn${state.openSummaries.has(sec.id)?' active':''}" id="sec-info-${sec.id}" onclick="toggleSummary('${sec.id}')" title="Spoiler-free summary">?</button>`:''}
+      </div>
+      ${hasSummary?`<div class="sec-summary${state.openSummaries.has(sec.id)?' open':''}" id="sec-sum-${sec.id}"><strong>What to Expect (Spoiler-free)</strong>${SUM[sec.id]}</div>`:''}
+      <div class="sec-body${isOpen?' open':''}" id="sec-body-${sec.id}">
+        <div class="sec-desc">${sec.desc}</div>
+        <div class="ep-list">
+          ${items.map(item => buildEpRow(item)).join('')}
+        </div>
+      </div>`;
+    container.appendChild(secEl);
+  });
+
+  if (q && resultLabel) {
+    resultLabel.style.display = 'block';
+    resultLabel.textContent = `"${state.search}" — ${totalFound} result${totalFound!==1?'s':''}`;
+  } else if (resultLabel) {
+    resultLabel.style.display = 'none';
+  }
+}
+
+function buildEpRow(item) {
+  const st = state.progress[item.id] || 'unwatched';
+  const m = WM[st];
+  const fmt = item.format||(FT[item.type]||'v');
+  const fm = FM[fmt]||FM.v;
+  const col = TC[item.type]||'#5e1212';
+  let tags = `<span class="badge" style="background:${fm.bg};color:${fm.tx}">${fm.l}</span>`;
+  if (st==='progress') tags += `<span class="badge state-badge" style="background:#3a2c00;color:#c8a000">In Progress</span>`;
+  if (st==='skipped') tags += `<span class="badge state-badge" style="background:#282828;color:#787878">Skipped</span>`;
+  const noncanon = item.canon===false ? `<span class="ep-noncanon"> [non-canon]</span>` : '';
+  const notes = item.notes ? `<div class="ep-notes${item.conf?' confirmed':''}">${item.notes}</div>` : '';
+  return `<div class="ep-row" data-id="${item.id}" data-state="${st}" style="--ep-col:${col}">
+    <button class="watch-btn" onclick="toggleEpisode('${item.id}')" title="${st}" style="background:${m.bg};border-color:${m.bd};color:${m.co}">${m.i}</button>
+    <div class="ep-body">
+      <div class="ep-top">
+        <span class="ep-code">${item.code}</span>
+        <span class="ep-title">${item.title}${noncanon}</span>
+      </div>
+      ${notes}
+      <div class="ep-tags">${tags}</div>
+    </div>
+    <a href="${item.watchUrl}" target="_blank" class="ep-link">Go ↗</a>
+  </div>`;
+}
+
+// ─── TABS ─────────────────────────────────────────────────────
+function switchTab(t) {
+  state.tab = t;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.style.display=p.id==='tab-'+t?'block':'none');
+  if (t==='planner') updatePlanner();
+}
+
+// ─── PLANNER ─────────────────────────────────────────────────
+function updatePlanner() {
+  const ess = ALL.filter(e=>e.priority==='essential'&&e.type!=='beacon');
+  const rem = ess.filter(e=>!state.progress[e.id]||state.progress[e.id]==='skipped').length;
+  const inp = ess.filter(e=>state.progress[e.id]==='progress').length;
+  const don = ess.filter(e=>state.progress[e.id]==='watched').length;
+  const epw = state.plannerEpw;
+  const wks = rem>0 ? Math.ceil(rem/epw) : 0;
+  const fin = new Date(); fin.setDate(fin.getDate()+wks*7);
+  const fd = fin.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  const setEl = (id,v,col) => { const e=document.getElementById(id); if(e){e.textContent=v;if(col)e.style.color=col;} };
+  setEl('p-epw',epw);
+  setEl('p-rem',rem+' eps','#ede0c8');
+  setEl('p-inp',inp+' eps','#c8a000');
+  setEl('p-don',don+' eps','#60c060');
+  setEl('p-fin',rem===0?'Done! ✦':fd,rem===0?'#60c060':'#c8a844');
+  setEl('p-note',`At ${epw}/week: ~${epw*4} hrs/week — ${wks} weeks — ~${rem*4} hrs remaining.`);
+  const range = document.getElementById('p-range');
+  if (range) range.value = epw;
+}
+
+function setEpw(v) {
+  state.plannerEpw = Math.max(1,Math.min(12,v));
+  updatePlanner();
+}
+
+// ─── BACKUP ──────────────────────────────────────────────────
+function toggleBackup() {
+  state.showBackup = !state.showBackup;
+  const panel = document.getElementById('backup-panel');
+  if (panel) panel.classList.toggle('open', state.showBackup);
+  const btn = document.getElementById('backup-btn');
+  if (btn) btn.classList.toggle('active', state.showBackup);
+  if (state.showBackup) {
+    const exp = document.getElementById('backup-export');
+    if (exp) exp.value = JSON.stringify(state.progress);
+  }
+}
+
+function doImport() {
+  const val = document.getElementById('backup-import')?.value?.trim();
+  if (!val) return;
+  try {
+    const p = JSON.parse(val);
+    if (p && typeof p==='object' && !Array.isArray(p)) {
+      state.progress = p;
+      saveProgress();
+      rebuildList();
+      updateAllBars();
+      updateOverallBar();
+      updateNextUp();
+      document.getElementById('backup-import').value = '';
+      toggleBackup();
+      alert('Progress restored successfully!');
+    } else { alert('Invalid format — paste the exact text from the export box.'); }
+  } catch(e) { alert('Could not parse that text.'); }
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+function init() {
+  updateOverallBar();
+  updateNextUp();
+  rebuildList();
+  switchTab('list');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  init();
+  initGistSync();
+});
+
+
+// Inject guest entries
+(function() {
+  const catMap = {c1:'#9b4a0a',c2:'#1a3a7a',exu:'#1a5c26',guest:'#5a4030'};
+  CATS.forEach(cat => {
+    const body = document.getElementById('gcat-body-'+cat.key);
+    if (!body) return;
+    const gs = GUESTS.filter(g=>g.cat===cat.key);
+    body.innerHTML = gs.map(g=>`
+      <div class="guest-entry" style="--cat-col:${catMap[cat.key]||'#5a4030'}">
+        <div class="guest-top">
+          <div>
+            <span class="guest-name">${g.name}</span>
+            ${g.must?`<span class="badge" style="background:#5c1400;color:#ffa870;margin-left:8px">Must Watch</span>`:''}
+          </div>
+          <span class="guest-player">${g.player}</span>
+        </div>
+        <div class="guest-eps">${g.eps}</div>
+        <div class="guest-desc">${g.desc}</div>
+      </div>`).join('');
+  });
+})();
+
+
+
+
+// ─── GIST AUTO-SYNC ──────────────────────────────────────────
+const GIST_CFG_KEY = 'cr_gist_config';
+const GIST_FILE    = 'cr_tracker_progress.json';
+let gistCfg        = null;   // { token, gistId }
+let gistSaveTimer  = null;
+let gistSyncing    = false;
+
+function loadGistCfg() {
+  try {
+    const c = localStorage.getItem(GIST_CFG_KEY);
+    if (c) gistCfg = JSON.parse(c);
+  } catch(e) {}
+}
+
+function persistGistCfg(cfg) {
+  gistCfg = cfg;
+  try { localStorage.setItem(GIST_CFG_KEY, JSON.stringify(cfg)); } catch(e) {}
+}
+
+function gistHeaders(token) {
+  return {
+    'Authorization': 'token ' + (token || gistCfg.token),
+    'Accept': 'application/vnd.github.v3+json',
+    'Content-Type': 'application/json'
+  };
+}
+
+async function fetchGist() {
+  if (!gistCfg) return null;
+  try {
+    const r = await fetch('https://api.github.com/gists/' + gistCfg.gistId, { headers: gistHeaders() });
+    if (!r.ok) return null;
+    const d = await r.json();
+    const file = d.files && d.files[GIST_FILE];
+    if (!file || !file.content) return null;
+    const parsed = JSON.parse(file.content);
+    // Support both plain object and timestamped wrapper
+    if (parsed && parsed._ts !== undefined) return parsed;
+    return { progress: parsed, _ts: 0 };
+  } catch(e) { return null; }
+}
+
+async function pushGist(progress) {
+  if (!gistCfg) return false;
+  const payload = { progress: progress, _ts: Date.now() };
+  try {
+    const r = await fetch('https://api.github.com/gists/' + gistCfg.gistId, {
+      method: 'PATCH',
+      headers: gistHeaders(),
+      body: JSON.stringify({ files: { [GIST_FILE]: { content: JSON.stringify(payload) } } })
+    });
+    return r.ok;
+  } catch(e) { return false; }
+}
+
+async function createGistAPI(token) {
+  const r = await fetch('https://api.github.com/gists', {
+    method: 'POST',
+    headers: gistHeaders(token),
+    body: JSON.stringify({
+      description: 'Critical Role C3 Tracker — watch progress',
+      public: false,
+      files: { [GIST_FILE]: { content: JSON.stringify({ progress: {}, _ts: Date.now() }) } }
+    })
+  });
+  if (!r.ok) return null;
+  const d = await r.json();
+  return d.id;
+}
+
+// Called after every progress change — debounced 1.5s
+function scheduleSyncSave() {
+  if (!gistCfg) return;
+  clearTimeout(gistSaveTimer);
+  setSyncIndicator('syncing');
+  gistSaveTimer = setTimeout(async function() {
+    const ok = await pushGist(state.progress);
+    setSyncIndicator(ok ? 'synced' : 'error');
+  }, 1500);
+}
+
+function setSyncIndicator(status) {
+  const el = document.getElementById('sync-indicator');
+  if (!el) return;
+  const labels = { idle:'', syncing:'↑ Syncing…', synced:'✓ Synced', error:'⚠ Sync failed — click to retry', offline:'~ Offline' };
+  el.className = 'sync-indicator ' + status;
+  el.textContent = labels[status] || '';
+  if (status === 'synced') {
+    setTimeout(function() {
+      if (el.textContent === '✓ Synced') el.className = 'sync-indicator idle';
+    }, 4000);
+  }
+}
+
+function showSyncStatus(msg, type) {
+  const el = document.getElementById('sync-status-line');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'sync-status-line show ' + (type || 'inf');
+}
+
+// ─── UI ACTIONS ──────────────────────────────────────────────
+function toggleSync() {
+  const panel = document.getElementById('sync-panel');
+  const btn   = document.getElementById('sync-btn');
+  if (!panel) return;
+  const open = panel.classList.toggle('open');
+  btn && btn.classList.toggle('active', open);
+  if (open) {
+    // Populate fields from stored config
+    if (gistCfg) {
+      const tf = document.getElementById('sync-token');
+      const gf = document.getElementById('sync-gist-id');
+      if (tf) tf.value = gistCfg.token || '';
+      if (gf) gf.value = gistCfg.gistId || '';
+      showSyncStatus('Connected to Gist: ' + gistCfg.gistId, 'ok');
+    } else {
+      showSyncStatus('Not connected. Enter your token and click Save & Connect.', 'inf');
+    }
+  }
+}
+
+async function saveGistConfig() {
+  const token  = (document.getElementById('sync-token')?.value || '').trim();
+  const gistId = (document.getElementById('sync-gist-id')?.value || '').trim();
+  if (!token)  { showSyncStatus('Please enter a GitHub Personal Access Token.', 'err'); return; }
+  if (!gistId) { showSyncStatus('Please enter a Gist ID, or click "Create New Gist for Me".', 'err'); return; }
+  showSyncStatus('Connecting…', 'inf');
+  persistGistCfg({ token: token, gistId: gistId });
+  // Test connection by fetching
+  const data = await fetchGist();
+  if (!data) {
+    showSyncStatus('Could not connect. Check your token and Gist ID.', 'err');
+    return;
+  }
+  showSyncStatus('Connected! Pulling progress from Gist…', 'inf');
+  await mergeFromGist(data);
+  showSyncStatus('✓ Connected and synced to Gist: ' + gistId, 'ok');
+  setSyncIndicator('synced');
+}
+
+async function createAndConnectGist() {
+  const token = (document.getElementById('sync-token')?.value || '').trim();
+  if (!token) { showSyncStatus('Please enter your GitHub Personal Access Token first.', 'err'); return; }
+  showSyncStatus('Creating private Gist…', 'inf');
+  const gistId = await createGistAPI(token);
+  if (!gistId) { showSyncStatus('Failed to create Gist. Check your token has the "gist" scope.', 'err'); return; }
+  document.getElementById('sync-gist-id').value = gistId;
+  persistGistCfg({ token: token, gistId: gistId });
+  // Push current progress to the new gist
+  await pushGist(state.progress);
+  showSyncStatus('✓ Gist created and connected! ID: ' + gistId + ' — copy this to your other devices.', 'ok');
+  setSyncIndicator('synced');
+}
+
+async function forcePullGist() {
+  if (!gistCfg) { showSyncStatus('Not connected. Save your config first.', 'err'); return; }
+  showSyncStatus('Pulling from Gist…', 'inf');
+  const data = await fetchGist();
+  if (!data) { showSyncStatus('Could not reach Gist.', 'err'); return; }
+  await mergeFromGist(data);
+  showSyncStatus('✓ Progress pulled from Gist.', 'ok');
+  setSyncIndicator('synced');
+}
+
+async function forcePushGist() {
+  if (!gistCfg) { showSyncStatus('Not connected. Save your config first.', 'err'); return; }
+  showSyncStatus('Pushing to Gist…', 'inf');
+  const ok = await pushGist(state.progress);
+  showSyncStatus(ok ? '✓ Progress pushed to Gist.' : 'Push failed.', ok ? 'ok' : 'err');
+  setSyncIndicator(ok ? 'synced' : 'error');
+}
+
+function clearGistConfig() {
+  if (!confirm('Disconnect from Gist? Your local progress is kept.')) return;
+  gistCfg = null;
+  try { localStorage.removeItem(GIST_CFG_KEY); } catch(e) {}
+  const tf = document.getElementById('sync-token');
+  const gf = document.getElementById('sync-gist-id');
+  if (tf) tf.value = '';
+  if (gf) gf.value = '';
+  showSyncStatus('Disconnected. Local progress retained.', 'inf');
+  setSyncIndicator('idle');
+}
+
+// Merge: prefer whichever has more recent _ts; if equal prefer remote
+async function mergeFromGist(data) {
+  // data = { progress, _ts }
+  const remoteProg = data.progress || data; // handle legacy format
+  const remoteTs   = data._ts || 0;
+  // get local timestamp
+  let localTs = 0;
+  try {
+    const lc = localStorage.getItem('cr_tracker_ts');
+    if (lc) localTs = parseInt(lc, 10);
+  } catch(e) {}
+  if (remoteTs >= localTs) {
+    state.progress = remoteProg;
+    saveProgress();
+    rebuildList();
+    updateAllBars();
+    updateOverallBar();
+    updateNextUp();
+  }
+}
+
+// ─── PATCH saveProgress to record timestamp + trigger sync ───
+const _origSaveProgress = saveProgress;
+function saveProgress() {
+  _origSaveProgress();
+  try { localStorage.setItem('cr_tracker_ts', Date.now().toString()); } catch(e) {}
+  scheduleSyncSave();
+}
+
+// ─── INIT: load config and pull from Gist ────────────────────
+async function initGistSync() {
+  loadGistCfg();
+  if (!gistCfg) return;
+  setSyncIndicator('syncing');
+  const data = await fetchGist();
+  if (data) {
+    await mergeFromGist(data);
+    setSyncIndicator('synced');
+  } else {
+    setSyncIndicator('offline');
+  }
+}
+
+</script>
+</body>
+</html>
